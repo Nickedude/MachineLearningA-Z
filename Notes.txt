@@ -1,0 +1,116 @@
+What i've learned:
+
+	- Regression
+		- Linear regression
+		- Robust regression (RANSAC)
+		- Multiple linear regression
+			- Dummy variable trap. Shouldn't have variables that predict each other. Can't distinguish between the effects of the coefficients. Always omit one dummy variable, it will be included in the constant coefficient. 
+			- Backward elimination: 
+				1) Select a significance level to stay in the model (e.g 5%).
+				2) Fit the full model with all possible predictors.
+				3) Consider the predictor with the highest P-value. If P > SL, go to step 4.
+				4) Remove the predictor.
+				5) Fit the model without this variable, repeat from step 3. When no variable matches in step 3 your model is ready.
+			- Forward selection:
+				1) Select a significance level to enter the model (e.g. 5%).
+				2) Fit all simple regression models y ~ xn. Select the one with the lowest P-value.
+				3) Keep this variable and fit all possible models with one extra predictor added to the one(s) you already have.
+				4) Consider the predictor with the lowest P-value. If it's lower than the significance level, go to step 3, otherwise finish. 
+			- Bidirectional elimination
+				1) Select a significance level to enter and to stay. You could pick 5% for both. 
+				2) Perform the next step of the forward selection (new variables must have a P value lower than the entry level).
+				3) Perform ALL of the Backward Elimination steps (old variables must have a P value lower than the significance level to stay). Repeat from step 2. 
+				4) No variables can enter and no old variables can leave. Then the model is done!
+			- All possible models
+				1) Select a criterion of goodness of fit(e.g. Akaike criterion)
+				2) Construct all possible regression models, 2^n-1 total combinations
+				3) Select the one with the best criterion
+				Very resource consuming, 10 models => 1023 models.
+
+	- Deep learning
+		- Mimics the human brain
+		- ~100 000 000 000 neurons in the human brain
+		- We create artifical neural nets with nodes/neurons
+		- Input layer, a node for each layer
+		- Output layer, giving us a value
+		- In between there are several hidden layers
+
+		- The neuron:
+			- The basic building blocks of neural networks
+			- How can we recreate neurons in a machine?
+			- A neuron by itself is pretty much useless
+			- But when you have lots of them they can do 
+			amazing stuff
+			- Dendrites - receivers, Axons - transmitters
+			- A neurons dendrites are connected to other neurons axons
+			- The connections are called synapses, this is where the signal is passed
+			- The neuron has a number of input signals and an output signal
+			- The input layer represents the senses, i.e touch, smell, sight, hearing etc. 
+			- The inputs are independent variables
+			- One input is a single observation (one row) and the output is the output for this specific observation
+			- The input variables needs to be standardized (mean of 0, variance of 1) or normalized. Additional reading: Efficient BackProp by Yann LeCun (1998)
+			- Geoffrey Hinton
+			- The output value can be continuous, binary or categorical (dummy values :-))
+			- What happens in the neuron? It starts by summing up all the input values and multiplying them by a weight. I.e it takes the weighted sum.
+			- After taking the weighted sum it applies the activation function
+			- The value of the function is then passed on
+
+		- The activation function:
+			- Threshold function, just like a unit step. If the value is greater than 0 the function value is 1, if the value is smaller than 0 the function values i 0. 
+			- Sigmoid function. 1 / (1 + e^-x). S-shaped. Approaches 0 for values smaller than 0, approaches 1 for values greater than 0.
+			- Rectifier function. f(x) = max(x,0). Looks like a simple y=k*x line
+			- Hyperbolic tangent. Similair to the Sigmoid function, but the functions values are in the range (-1,1)
+			- Rectifier function in hidden layer and Sigmoid function in output layer is a common combination.
+
+		- How do neural networks work?
+			- Without a hidden layer, we basically just have a function in the output node applied to a number of input value. If this function was a linear regression we'd just have a linear regression...
+			- The power in neural networks lies in the hidden layers, which provide extra accuracy/power
+			- In this example we assume that the neural network is already trained. 
+			- The inputs will be connected to the neurons via synapses. Each synapse will have a weight, some of which might be zero.
+			- How could this be the case? In this example the area and the distance are relevant. Normally, the further away you get from the city the bigger the house you can get for a cheaper sum. This neuron could look specifically for area properties which are not that far from the city, but have large areas. The area is higher than the average compared to the other houses that close. If this critera is met, the activation function lits up. It doesn't really care about the bedrooms or the age.
+			- Another example with a neuron that only looks at the area, the number of bedrooms and the age of the house. This neuron might've realized that in this specific city there are a lot of families with children that are looking for properties that are big and new. They want a low age, a high area and a high number of bedrooms and hence it's high valued. Therefore it doesn't care about the distance. The combination (!) of these parameters is what gives the neural network it's power. The neural network combines these three values into a new attribute and therefore it's more precise.
+			- A third example. One neuron might've just picked up one parameter, the age. The price could drop for all houses under a 100 years, but when the house is over a 100 years the house could be more valuable. Here the rectifier function could be applied. It's 0 (no value) up until a 100 years. When a 100 years is passed this neuron contributes with a value. 
+			- The neural network can pick up a lot of things that we can't realize ourselves.  
+			- The hidden layer increases the flexibility of the neural network. It allows the neural network to look for very specific things. 
+
+		- How do neural networks learn?
+			- You provide inputs and outputs and let the neural network figure out the "rules" itself
+			- We denote the actual value by y and the output value/the predicted value by y-hat.
+			- In order to learn we compare y and y-hat. We do this by calculating the cost function. One such function is C = 0.5 * (y-hat - y) ^ 2
+			- We want to minimize the cost function since the lower it is the closer y is to y-hat. 
+			- We feed the information back into the neural network and based on that we update the weights.
+			- We then feed the values back into the neural network, calculate the cost function, and then feed that information back. 
+			- What happens with several rows? It's all the same perceptron, but feeded with multiple rows. 
+			- One epok is when we go through a whole dataset. - We calculate y-hat for every row. For every row we have an actual value. Based on those differences we calulate the cost function C = sum(0.5 * (y-hat - y)^2)
+			- After we have the full cost function we go back and update the weights. The weights are shared by all of the rows, that's why we sum everything up in the cost function, since it's shared.
+			- Now we feed each row into the neural network again and repeat the process. 
+			- This whole process is called back propagation.
+
+		- Gradient descent
+			- How can we minimize the cost function? 
+			- We could brute force. Try a lot of weights and use the one that works the best. 
+			- Doesn't work very well, requires a huge amount of resources. The curse of dimensionality!
+			- Imagine 25 weights with a 1000 different possible weights. 1000^25 = 10^75. Sunway TaihuLight can do 93 PFLOPS. If we assume that one weight could be tried in one floating point operation. That would yield 10^75/(93*10^15) = 3.42 * 10^50 years. This is longer than the universe has existed. 
+			- Instead of brute force we will use a method called gradient descent.
+			- Pick a starting point. Look at the slope of the curve of the cost function. If the slope is negative we will go "downhill" on the curve. If the slope is positive we will go "uphill".
+			- This allows us to find the best weights faster, i.e the lowest cost function. On the x-axis we have y-hat and on the y-axis we have the value of the cost function. 
+
+		- Stochastic gradient descent
+			- Gradient descent required the cost function to be convex
+			- If it's not convex we could find the local minimum instead of the global minimum. 
+			- To solve this we use stochastic gradient descent
+			- Normal gradient descent is when we take all of our rows, plug them in to the neural network, calculate the cost function, and adjust the weights. 
+			- In stochastic gradient descent we take a row, calculate the cost function, adjust the weights and then proceed with the next row. I.e we go row by row. The other form of gradient descent is called batch gradient descent.
+			- The main two differences are that the stochastig gradient descent method helps you avoid the problem with finding local minimums. The reason for that is that the SGD has much higher fluctuations. It's more likely to find the global minimum. The other thing is that the SGD is faster. 
+			- The batch gradient descent is deterministic, you will always receive the same result. SGD is stochastic, i.e random.
+
+		- Backpropagation
+			- During the process of backpropagation all the weights are updated. This is much easier than updating the individual weights independently.
+			- The different steps of training the ANN with stochastic gradient descent.
+			1) Randomly initialize the weights to small numbers close to 0
+			2) Input the first observation of your dataset in the input layer, each feature in one input node.
+			3) Forward propagation: from left to right, the neurons are activated in a way that the impact of each neuron's activation is limited by the weights. Propagate the activations until getting the predicted result y-hat.
+			4) Compare the predicted result with the actual result. Measure the error using a cost function.
+			5) Back-propagation: from right to left, the error is back-propagated. Update the weights according to how much they are responsible for the error. The learning rate decides by how much we update the weights. 
+			6) Repeat steps 1 to 5 and update the weights after each observation (Reinforcement learning, in our case stochastic gradient descent). Or: repeat steps 1 to 5 but update the weights only after a batch of observations (Batch learning, gradient descent).
+			7) When the whole training set passed through the ANN, that makes an epoch. Redo more epochs. 
