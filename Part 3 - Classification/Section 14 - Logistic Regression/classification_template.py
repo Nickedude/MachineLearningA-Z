@@ -16,8 +16,7 @@ y = dataset.iloc[:, 4].values
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
 
-# Feature scaling (getting variables in the same range and scale)
-from sklearn.preprocessing import StandardScaler
+# Feature scaling (getting variables in the same range and scale, needed when the algorithm is based on eucledian distance)from sklearn.preprocessing import StandardScaler
 scX = StandardScaler()
 X_train = scX.fit_transform(X_train)    # We fit scX to X_train, and transform X_train
 X_test = scX.transform(X_test)
@@ -64,7 +63,7 @@ plt.ylim(X2.min(), X2.max())
 for i, j in enumerate(np.unique(y_set)):
     plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
                 c = ListedColormap(('red', 'green'))(i), label = j)
-plt.title('SVM (Training set)')
+plt.title('SVM (Test set)')
 plt.xlabel('Age')
 plt.ylabel('Estimated salary')
 plt.legend()
