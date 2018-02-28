@@ -27,6 +27,64 @@ What i've learned:
 				3) Select the one with the best criterion
 				Very resource consuming, 10 models => 1023 models.
 
+	- Classification
+		- Logistic regression
+			- "State a likelyhood for a person to take action"
+			- Sigmoid function
+			- Used to predict probability (p-hat)
+			- Y-value between 0 and 1, 0.42 => 42% probable
+		
+		- K-nearest neighbours
+			- There's a step-by-step process which is applied to the data points you want to classify: 
+				- 1) Choose the number of K neighbours (default = 5)
+				- 2) Take the K nearest neighbours of the new data point, according to the Euclidean distance
+				- 3) Among these K neighbours, count the number of data points in each category
+				- 4) Assign the new data point to the category where you counted the most neigbours
+			- The training data constitute the neighbours
+			- Plot can show prediction boundry and prediction regions
+			- Non-linear classifier
+
+		- Support vector machines
+			- Finds the best decision boundary that helps us classify our data points
+			- The line is found by inspecting the maximum margin
+			- The outmost "points" (actually vectors) of each class are called support vectors because they assist in finding the maximum margin
+			- The line representing the maximum margin is called the maximum margin hyperplane
+			- Other algorithms look at the most "appely apples", the heart of each class, to learn how a typical member of the class looks. Then they make predictions based on this experience.
+			- SVMs look at "apples which are very much like oranges". That is, they look at members of a class, say A, who are very much alike members of another class, say B, and create their boundaries based on these observations. These extreme members are the support vectors. SVMs always look at the extreme cases. 
+			- Some date is linearly separable, some are not. We can use different kernels in different situations.
+			- Non-linearly separable problems:
+				- Mapping to a higher dimension. For example, if you have points in one dimension you could center the boarder around 0 and then square the points, f = (x-5)^2. Projecting this function (line/hyperplane etc) into the original space gives us our separator.
+				- Mapping to a higher dimension is quite demanding resource-wise. A lot of processing power is needed. 
+				- The kernel trick helps us with this problem.
+			- The kernel trick:
+				- Gaussian RBF Kernel. K(X,L_i) = e ^ -((|X-L_i|^2)/(2*sigma^2)). RBF stands for radial basis function. Results in a three-dimensional "spike". The circumference can be projected back to a two-dimensional plane and used as a decision boundary. 
+				- Sigma defines the circumference. 
+				- Landmark defines the center of the circle.
+				- Computation is still done in the lower-dimensional space
+				- Several such kernels can be added, "Green if K(X,L_1) + K(X,L_2) > 0"
+			- Kernel functions:
+				- Gaussian RBF Kernel
+				- Sigmoid Kernel 
+				- Polynomial Kernel
+		- Naïve Baye's classifier
+			- Baye's theorem
+				- Example: A lot of spanners, some coming from machine 1 and some from machine 2. Some work great, others are deffective. What is the probability of machine 2 producing a defective spanner? Machine 1 produces 30 wrenches/hour, machine 2 produces 20 wrenches/hour. Out of all of them, 1% are deffective. Out of all the deffective parts 50% came from machine 1, and 50% from machine 2. What is the probability that a part produced by machine 2 is defective?
+				- P (A | B) = P(B | A) * P(A) / P(B)
+				- A = defective, B = produced by machine 2
+				- P(Defective | Produced by machine 2) = P(Produced by machine 2 | Defective) * P (Defective) / P(Produced by machine 2)
+				- P(Defective | Produced by machine 2) = 0.5 * 0.01 / (20/50) = 1.25 %
+				- P(Def | M1) = P(M1 | Def) * P(Def) / P(M1) = 0.5 * 0.01 / (30/50) = 0.0083333 ~ 0.83 % 
+			- Plan of attack
+				- Example: Features- salary & age, classes- walks & drives
+				- Apply Baye's theorem twice
+				- X represents the features
+				- 1) P(Walks | X) = P(X | Walks) * P(Walks) / P(X)
+				- Naming conventions:   - P(Walks) = Prior probability
+										- P(X) = Marginal likelihood
+										- P(X | Walks) = Likelihood
+										- P(Walks | X) = Posterior probability 	
+
+
 	- Deep learning
 		- Mimics the human brain
 		- ~100 000 000 000 neurons in the human brain
