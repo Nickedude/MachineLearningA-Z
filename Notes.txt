@@ -82,9 +82,77 @@ What i've learned:
 				- Naming conventions:   - P(Walks) = Prior probability
 										- P(X) = Marginal likelihood
 										- P(X | Walks) = Likelihood
-										- P(Walks | X) = Posterior probability 	
+										- P(Walks | X) = Posterior probability 
+				- 2) P(Drives | X) = P(X | Drives) * P(Drives) / P(X)
+				- 3) Compare P(Walks | X) v.s. P(Drives | X) and decide
+				- Thus, this is a probabilistic classifier
+				- Calculations: 	- P(Walks | X)?
+									- P(Walks) = Number of walkers / Total number of observations
+									- P(X) = Draw circle around datapoint, remove your own datapoint temporarily, look at all the points inside the circle and deem them to be similar to the point we removed. The probability of X is the probability of a point being inside this circle. P(X) = Number of similar observations / Total observations
+									- P(X | Walks) = Draw circle around observations, anything inside is similar, look only at the ones who are walking, what is the probability of a datapoint having similar features as the ones in the circle. P(X | Walks) = Number of similar observations among those who walk / Total number of walkers
+									- P(Drives | X) = 1 - P(Walks | X), this is only because there are two classes, can be calculated in the same way.
+			- Why "Naïve"?
+				- Independence assumption
+				- Assumes that the variables are independent. Are salary and age really independent?
+				- We still apply it, thus naive.
+			- P(X)
+				- Number of similar observations / Total observations
+				- Same in both step 1 & 2
+				- Since we need to compare the probabilities against each other, and since they all include P(X), we can remove P(X). Simplification. If we want to calculate the actual value of say P(Walks | X), we can't reomve it. 
+			- What happens when we have more than two classes? Take the maximum of the probabilities. Requires you to calculate several probabilities, can't just calculate one of them and then do 1 - ....
+		
+		- Decision trees
+			- CART = Classification trees, regression trees
+			- Regression => Real numbers
+			- Classifications => Classes
+			- We will focus on classification trees
+			- Works by splitting up the data into slices. Does a number of splits.
+			- The split is done such that the number of members of a class i maximized. 
+			- The split is trying to minimize the entropy, there's some deep mathematics behind this. The easy way to think about it is that the splits are done such that on each side of the split the number of members of each class is maximized. 
+			- Each "pocket" is called a leaf. The final ones are called terminal leafs.
+			- The decision tree "asks questions" as it goes, based on the splits. "Is the point above or below of split 1?" -> "If above, to the left or right of split 2?"
+			- Mathematical: 				X_2 < 60?
+									Yes   /          \ No
+									     /            \
+									   X_1 < 70?
+								Yes	  /       \ No
+								     /         \
+								  Class A      X_2 < 70? 
+			- Trees can be very, very long. Sometimes you don't want to go all the way to the bottom. At a certain point, you can stop and simply look at the probabilities. Perhaps it's a 70% percent chance that a point belongs to class A when you still have numerous levels of the tree left. Then you might decide that this is "good enough" and end the computation.
+			- It might not always be the case that there are two classes, nodes can thus have several children, and the type of questions can be very different.
+			- Decision trees are actually an old method. Recently, they wre "reborn" with new methods, such as random forest and gradient boosting. Decision trees are very simple and not that useful on their own. However, combined with these methods, they can become very powerful.
+			- The split aims to create homogenous groups
+			- The algorithm tries to catch every case, and thus there is a risk of overfitting
 
-
+		- Random forests
+			- Ensemble learning
+				- You take multiple machine learning algorithms and put them together to create a single, bigger, machine learning algorithm. The final algorithm weighs the partial algorithms against each other to make decisions. It could be several instances of the same algorithms but also different algorithms. 
+			- Step-by-step process:
+				1) Pick K random data points from the training set
+				2) Build a decision tree associated to these K data points
+				3) Choose the number of trees you want to build, and repeat steps 1 & 2
+				4) For a new data point, make each of the trees predict the class of the point and assign the point to the class that wins the majority vote
+			- Each tree might not be ideal, overall they perform very well. The algorithm leverages the power of the crowd. It relies on multiple trees. 
+			- The power of numbers helps to get rid of certain errors and uncertainties. 
+			- Used in kinect to understand where the bodyparts of people are and how they're moving
+			- Play around with nr of trees to detect overfitting
+			- Information gain = the reduced entropy
+			- There's a risk of overfitting when using random forests. The algorithm tries to catch all cases, which causes it to "see things that aren't there", and can easily overfit the model.
+		- False positives & false negatives
+			- False positive = something that's predicted as positive (offer taken) but isn't
+				- Also called a type I error
+				- Something didn't happen, but we said that it would happen
+			- False negative = something that's predicted as negative (offer declined) but isn't
+				- Also called type II error
+				- Something did happen, but we said that it wouldn't happen
+		- Confusion Matrix
+			- Columns are y-hat
+			- Rows are y
+			- cm[1,1] = Predicted true, actually true
+			- cm[0,0] = Predicted false, actually false
+			- cm[0,1] = Predicted true, actually false - false positives
+			- cm[1,0] = Predicted false, actually true - false negatives
+  	
 	- Deep learning
 		- Mimics the human brain
 		- ~100 000 000 000 neurons in the human brain
