@@ -17,6 +17,7 @@ from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
 
 # Feature scaling (getting variables in the same range and scale, needed when the algorithm is based on eucledian distance)from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler
 scX = StandardScaler()
 X_train = scX.fit_transform(X_train)    # We fit scX to X_train, and transform X_train
 X_test = scX.transform(X_test)
